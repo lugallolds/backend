@@ -26,7 +26,7 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(cors());
@@ -35,10 +35,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// mongoose.connect('mongodb://127.0.0.1:27017/clinicagameca', {useNewUrlParser: true})
+//mongoose.connect('mongodb://localhost:27017/clinica_gameca', {useNewUrlParser: true,  useUnifiedTopology: true})
 mongoose.connect('mongodb://127.0.0.1:27017/clinicagameca?gssapiServiceName=mongodb', {useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true,})
-// mongoose.connect('mongodb://localhost:27017/clinicagameca', {useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true,})
-// mongoose.connect('mongodb://localhost:27017/clinicagameca', {useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true,})
 .then(() => console.log("Connectado a mongodb"))
 .catch((err) => {
   console.log(err);
@@ -76,7 +74,7 @@ app.use('/', indexRouter);
 
 //Excepciones de token JWT
 app.use(jwt(jwtConfig).unless({
-  path: [{ url: "/auth/login" }, { url: "/auth/logout" }, { url: "/auth/create" }, { url: "/auth/vericarsms" },{ url: "/auth/valida" }, { url: "/auth/refreshtoken" }]
+  path: [{ url: "/auth/login" }, { url: "/auth/logout" }, { url: "/auth/create" }, { url: "/auth/vericarsms" },{ url: "/auth/valida" }, { url: "/auth/refreshtoken" }, { url: "/public/upload/" }]
 }));
 
 // app.use('/users', usersRouter);
@@ -95,7 +93,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'production' ? err : {};
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
   if (err.message === 'token blocked') {
     err.status = 401;
   }
