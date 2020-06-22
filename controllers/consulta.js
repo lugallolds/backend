@@ -50,7 +50,34 @@ const getConsulta = (req, res) => {
 
 }
 
+const getPacienteConsultaEmpresa = (req, res) => {
+    try {
+        console.log('req', req.query);
+        const props = req.query;
+        if (props._id) {
+            props._id = mongoose.Types.ObjectId(props._id);
+        }
+        if (props.paciente) {
+            props.paciente = mongoose.Types.ObjectId(props.paciente);
+        }
+        Consulta.find(props).populate('paciente')
+        .exec()
+        .then((paciente) => {
+            res.json(paciente);
+            console.log('pac', paciente);
+        })
+        .catch((err) => {
+            res.status(403).json(err.message);
+        });
+
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+
+}
+
 module.exports = {
     createConsulta,
-    getConsulta
+    getConsulta,
+    getPacienteConsultaEmpresa
 }

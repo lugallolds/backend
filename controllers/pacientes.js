@@ -70,9 +70,37 @@ const updatePaciente = (req, res) => {
     }
 }
 
+const getPacienteEmpresa = (req, res) => {
+    try {
+        console.log('req', req.query);
+        const props = req.query;
+
+        if (props.empresa) {
+            props.empresa = RegExp(props.empresa, "i");
+        }
+
+        Paciente.find(props)
+        .exec()
+        .then((paciente) => {        
+            res.json(paciente);
+            console.log('pac', paciente);
+        })
+        .catch((err) => {
+            res.status(403).json(err.message);
+        });
+
+        
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+
+}
+
+
 
 module.exports = {
     createPaciente,
     getPacientes,
-    updatePaciente
+    updatePaciente,
+    getPacienteEmpresa
 }
